@@ -1,0 +1,1 @@
+docker run --rm -it -v C:\Users\Ocean\Desktop\author:/var/texlive babbage/latex-dstu pdflatex_full author

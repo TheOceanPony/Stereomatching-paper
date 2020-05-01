@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: author.aux
+The style file: ugost2008.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: author.bib
+Warning--I didn't find a database entry for "Vasylenko92"
+Warning--I didn't find a database entry for "ObchTech93"
+Warning--I didn't find a database entry for "Ponomarenko86a"
+Warning--I didn't find a database entry for "Malikov92"
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 1 entry,
+            4152 wiz_defined-function locations,
+            1242 strings with 10194 characters,
+and the built_in function-call counts, 515 in all, are:
+= -- 59
+> -- 9
+< -- 2
++ -- 3
+- -- 2
+* -- 34
+:= -- 57
+add.period$ -- 5
+call.type$ -- 1
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 1
+duplicate$ -- 24
+empty$ -- 49
+format.name$ -- 2
+if$ -- 128
+int.to.chr$ -- 0
+int.to.str$ -- 1
+missing$ -- 0
+newline$ -- 22
+num.names$ -- 3
+pop$ -- 5
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 22
+stack$ -- 0
+substring$ -- 28
+swap$ -- 21
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 3
+width$ -- 2
+write$ -- 30
+(There were 4 warnings)
