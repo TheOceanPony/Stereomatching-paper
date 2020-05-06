@@ -314,325 +314,65 @@ d_i &= \argmin\limits_{d' \in D}{\big( f_{i}(d') + g(d',d_{i+1})\big) \; i = \ov
 	\label{2.1nodata}
 \end{figure}
 
-\label {2.1-style}Якщо ми не можемо обчислити вагу вершини -- будемо називати цю вершину <<закритою>> та позначати її чорним кружечком. В іншому ж випадку назвемо вершину <<відкритою>> та будемо позначати білим кружечком. Для простоти рисунків приймемо $D_{max} = 2$, та не будемо позначати ребер. Тоді в ситуації коли всі дані нам невідомі граф $G$ буде мати такий вигляд (рис. \ref{Gnodata}). 
-%Gnodata
-\begin{figure}[h!]
-	\centering
-	\begin{tikzpicture}[scale=0.6]
-	\tikzstyle{vertex_closed_1} = [circle, draw=black, fill=gray, opacity=0.3]
-	\tikzstyle{vertex_closed_2} = [circle, draw=black, fill=gray]
-	\tikzstyle{vertex_opened} = [circle, draw=black]
+\label {2.1-style} Будемо називати вершину <<закритою>> якщо ми не можемо обчислити вагу вершини, а якщо можемо -- назвемо її <<відкритою>>. 
+Тож на початку всі вершин графу $G$ закриті.
 
-%------------------------------------------------------------
-	\node[vertex_opened] (s) at (-1,1) {s};
-
-	\node[vertex_closed_2] (v00) at (1,0) {};
-	\node[vertex_closed_2] (v01) at (1,1) {};
-	\node[vertex_closed_2] (v02) at (1,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v10) at (2,0) {};
-	\node[vertex_closed_2] (v11) at (2,1) {};
-	\node[vertex_closed_2] (v12) at (2,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v20) at (3,0) {};
-	\node[vertex_closed_2] (v21) at (3,1) {};
-	\node[vertex_closed_2] (v22) at (3,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v30) at (4,0) {};
-	\node[vertex_closed_2] (v31) at (4,1) {};
-	\node[vertex_closed_2] (v32) at (4,2) {};
-		
-%------------------------------------------------------------
-
-	\node[vertex_closed_2, opacity =0] (v40) at (6,0) {};
-	\node[vertex_closed_2, opacity =0] (v41) at (6,1) {};
-	\node[vertex_closed_2, opacity =0] (v42) at (6,2) {};
-	
-	\path (v30) -- node[auto=false]{\ldots} (v40);
-	\path (v31) -- node[auto=false]{\ldots} (v41);
-	\path (v32) -- node[auto=false]{\ldots} (v42);
-	
-	\end{tikzpicture}
-	\captionof{figure}{граф $G$ при відсутності даних}
-	\label{Gnodata}
-\end{figure}
-
-Нехай тепер нам поступово, по порядку надходить по одному пікселю кожного зображення. Коли нам відомий лише один перший піксель кожного зображення (рис.\ref{2.2onedata}) то граф $G$ матиме вигляд (рис.\ref{G1pixel}).%\newpage
+Нехай тепер нам поступово, по порядку надходить по одному пікселю кожного зображення. Коли нам відомий лише перший піксель кожного зображення (рис.\ref{2.2onedata})
 %2.2onedata
-\begin{figure}[h!]
+\begin{figure}[h]
 	\centering
 	\includegraphics[scale = 0.5]{onestereoknown.pdf}
 	\caption{Відомі перші пікселі обох зображень}
 	\label{2.2onedata}
 \end{figure}
-%G1pixel
-\begin{figure}[h!]
-	\centering
-	\begin{tikzpicture}[scale=0.6]
+то граф $G$ матиме лише одну відкриту вершину $\sigma(1, 0)$. Коли нам буде відомо два перші пікселі, то нам стануть відомі ще й вершини 
+$\sigma(1, 1)$ та $\sigma(2, 0)$. Таким чином, при надходженні перших $k$ пікселів обох зображень, в графі $G$ будуть відкриті вершини 
+$\sigma(i, d_i)$, де $i \in I, i \leq k$, a $d_i \in D, 0 \leq d_i \leq \min{\big( k - i, D_{max}  \big)}$. І тільки коли $k$ буде більше за $D_{max}$, всі вершини в першому стовпчику $\sigma(1, d) \; \forall d \in D $ будуть відкритими, і ми зможемо починати оптимізацію:
 
-	\tikzstyle{vertex_closed_1} = [circle, draw=black, fill=gray, opacity=0.3]
-	\tikzstyle{vertex_closed_2} = [circle, draw=black, fill=gray]
-	\tikzstyle{vertex_opened} = [circle, draw=black]
+Нехай $G^0 = <\mathcal{V}^0, \mathcal{E}^0> = <\mathcal{V}, \mathcal{E}> = G $. Нехай також $s^0(d) = 0, \; \forall d \in D $. Для відновлення послідовності 
+$\overline{d}$ введемо матрицю $\hat{\mathcal{P}}$ розмірності $n \times (D_{max} + 1)$.  $$p_{1,d} = 0, \forall d \in D. $$
 
-%------------------------------------------------------------
-	\node[vertex_opened] (s) at (-1,1) {s};
+Як тільки перші $D_{max} + t, \; ( 1 \leq t < n - D_{max})$ стерео-пікселей стають нам відомі, шукаємо граф $G^t$:
+\begin{enumerate}
+	\item 
+		$\forall d \in D :$\\
+		$s^t(d) = \min\limits_{d' \in D} \big( s^{(t-1)}(d') + h(t, d') + g(d', d) \big).$\\
+		$p_{t+1,d} = \argmin\limits_{d' \in D}{\big( s^t(d) \big) }$.
+	\item 
+		$\mathcal{V}^t = \mathcal{V}^{t-1} \setminus \{ \sigma(t, d) \; | \; d \in D \}.$
+	\item %\begin{align*}
+		$\mathcal{E}^t = \mathcal{E}^{t-1} \setminus$\\
+		$\setminus \bigcup\limits_{d \in D} <S, \sigma(t, d) > \setminus $\\
+		$\setminus \bigcup\limits_{\substack{d \ in D \\ d' \in D}} <\sigma(t, d), \sigma(t+1, d') > \cup $\\
+		$\cup \bigcup\limits_{d \in D} <S, \sigma(t+1, d) >.$\\
+		А вага ребра $ <S, \sigma(t+1, d) >$ -- $ s^t(d)$ %, \; \forall d \in D$.
+		%\end{align*}
+	\item 
+		$G^t = <\mathcal{V}^t, \mathcal{E}^t> $ 
+\end{enumerate}
 
-	\node[vertex_opened] (v00) at (1,0) {};
-	\node[vertex_closed_2] (v01) at (1,1) {};
-	\node[vertex_closed_2] (v02) at (1,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v10) at (2,0) {};
-	\node[vertex_closed_2] (v11) at (2,1) {};
-	\node[vertex_closed_2] (v12) at (2,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v20) at (3,0) {};
-	\node[vertex_closed_2] (v21) at (3,1) {};
-	\node[vertex_closed_2] (v22) at (3,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v30) at (4,0) {};
-	\node[vertex_closed_2] (v31) at (4,1) {};
-	\node[vertex_closed_2] (v32) at (4,2) {};
-		
-%------------------------------------------------------------
 
-	\node[vertex_closed_2, opacity =0] (v40) at (6,0) {};
-	\node[vertex_closed_2, opacity =0] (v41) at (6,1) {};
-	\node[vertex_closed_2, opacity =0] (v42) at (6,2) {};
-	
-	\path (v30) -- node[auto=false]{\ldots} (v40);
-	\path (v31) -- node[auto=false]{\ldots} (v41);
-	\path (v32) -- node[auto=false]{\ldots} (v42);
-	
-	\end{tikzpicture}
-	\captionof{figure}{Відомі перші пікселі обох зображень}
-	\label{G1pixel}
-\end{figure}
 
-Коли нам буде відомо два перші пікселі на обох зображеннях граф $G$ матиме вигляд (рис.\ref{G2pixels}).
-%G2pixels
-\begin{figure}[h!]
-	\centering
-	\begin{tikzpicture}[scale=0.6]
-	\tikzstyle{vertex_closed_1} = [circle, draw=black, fill=gray, opacity=0.3]
-	\tikzstyle{vertex_closed_2} = [circle, draw=black, fill=gray]
-	\tikzstyle{vertex_opened} = [circle, draw=black]
+Кожен новий граф $G^t$ матиме на $(D_{max})^2$ менше ребер, ніж граф $G^{t-1}$. Таким чином, на момент приходу останніх пікселів, нам треба буде опрацювати лише $D_{max}$ ребер. А якщо б ми спочатку чекали приходу всіх даних, а тільки потім починали обчислення, нам треба було опрацювати 
+$(n-1)(D_{max})^2$ ребер.
 
-%------------------------------------------------------------
-	\node[vertex_opened] (s) at (-1,1) {s};
+Коли ж нам стануть відомі всі $n$ пікселей обох зображень, нам залишиться тільки знайти
+$$ d_n = \argmin\limits_{d' \in D} \big( s^{(n-D_{max}-1)}(d') + h(n, d') \big),$$
+та відновити послідовність $\overline{d}$ через матрицю $\hat{\mathcal{P}}$ --
+$$ d_i = p_{i+1,d_{i+1}}, i = \overline{n-1, 1}. $$
 
-	\node[vertex_opened] (v00) at (1,0) {};
-	\node[vertex_opened] (v01) at (1,1) {};
-	\node[vertex_closed_2] (v02) at (1,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_opened] (v10) at (2,0) {};
-	\node[vertex_closed_2] (v11) at (2,1) {};
-	\node[vertex_closed_2] (v12) at (2,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v20) at (3,0) {};
-	\node[vertex_closed_2] (v21) at (3,1) {};
-	\node[vertex_closed_2] (v22) at (3,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v30) at (4,0) {};
-	\node[vertex_closed_2] (v31) at (4,1) {};
-	\node[vertex_closed_2] (v32) at (4,2) {};
-		
-%------------------------------------------------------------
 
-	\node[vertex_closed_2, opacity =0] (v40) at (6,0) {};
-	\node[vertex_closed_2, opacity =0] (v41) at (6,1) {};
-	\node[vertex_closed_2, opacity =0] (v42) at (6,2) {};
-	
-	\path (v30) -- node[auto=false]{\ldots} (v40);
-	\path (v31) -- node[auto=false]{\ldots} (v41);
-	\path (v32) -- node[auto=false]{\ldots} (v42);
-	
-	\end{tikzpicture}
-	\captionof{figure}{Відомі перші два пікселі зображень}
-	\label{G2pixels}
-\end{figure}
+%$G^0 = <\mathcal{V}^0, \mathcal{E}^0>
 
-По мірі надходження наступних пікселей в графі $G$ будуть відкриватися закриті вершини на діагоналі над відкритими вершинами. А як тільки нам буде відомо перші $D_{max} + 1$ пікселей на обох зображеннях -- всі вершини в першому стовпчику будуть відкритими (рис. \ref{Gallpixels}). Отже можемо знайти довжини найкоротших шляхів з початкової вершини $S$ до кожної з вершин у другому стовпчику (\ref{Goptstart}). 
-%Gallpixels
-\begin{figure}[h!]
-	\centering
-	\begin{tikzpicture}[scale=0.6]
+%Як тільки нам буде відомо перші $D_{max} + 1$ пікселей на обох зображеннях -- всі вершини $\sigma(1, d), \; \forall d \in D$ стануть відкритими. Отже можемо знайти довжини найкоротших шляхів з початкової вершини $S$ до кожної з вершин у другому стовпчику (\ref{Goptstart}). 
 
-	\tikzstyle{vertex_closed_1} = [circle, draw=black, fill=gray, opacity=0.3]
-	\tikzstyle{vertex_closed_2} = [circle, draw=black, fill=gray]
-	\tikzstyle{vertex_opened} = [circle, draw=black]
+%І як тільки ми їх знайдемо, тоді всі інші можливі шляхи з $S$ до $ \sigma(2,d), \, d \in D$ нам не потрібні. Тому ми відкидаємо всі вершини в першому стовпчику, і вводимо ребра $<S, \sigma(2, d) >, \, d \in D$ (рис.\ref{Goptafter}), з вагою $${g_d}^{(1)} = \min\limits_{k=0}^{D_{max}} (h_{k} + g_{kd}).$$ 
+	
+%Цим самим зменшуємо кількість ребер на $(D_{max})^2$. При надходженні наступних пікселей повторюємо цю операцію, але ваги нових ребер $g_d^{(i)}$ вже будуть враховувати попередні оптимізації --
+%$${g_d}^{(i)} = \min\limits_{k=0}^{D_{max}} ({g_k}^{(i-1)} + h_{k} + g_{kd}).$$ 
 
-%------------------------------------------------------------
-	\node[vertex_opened] (s) at (-1,1) {s};
-
-	\node[vertex_opened] (v00) at (1,0) {};
-	\node[vertex_opened] (v01) at (1,1) {};
-	\node[vertex_opened] (v02) at (1,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_opened]   (v10) at (2,0) {};
-	\node[vertex_opened]   (v11) at (2,1) {};
-	\node[vertex_closed_2] (v12) at (2,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_opened]   (v20) at (3,0) {};
-	\node[vertex_closed_2] (v21) at (3,1) {};
-	\node[vertex_closed_2] (v22) at (3,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_2] (v30) at (4,0) {};
-	\node[vertex_closed_2] (v31) at (4,1) {};
-	\node[vertex_closed_2] (v32) at (4,2) {};
-		
-%------------------------------------------------------------
-
-	\node[vertex_closed_2, opacity =0] (v40) at (6,0) {};
-	\node[vertex_closed_2, opacity =0] (v41) at (6,1) {};
-	\node[vertex_closed_2, opacity =0] (v42) at (6,2) {};
-	
-	\path (v30) -- node[auto=false]{\ldots} (v40);
-	\path (v31) -- node[auto=false]{\ldots} (v41);
-	\path (v32) -- node[auto=false]{\ldots} (v42);
-	
-	\end{tikzpicture}
-	\captionof{figure}{Відомі перші $D_{max} + 1$ пікселей}
-	\label{Gallpixels}
-\end{figure}
-%Goptstart
-\begin{figure}[h!]
-	\centering
-	\begin{tikzpicture}[scale=0.7]
-
-	\tikzstyle{vertex_closed_1} = [circle, draw=black, fill=gray] %opacity=0.3]
-	\tikzstyle{vertex_closed_2} = [circle, draw=black, fill=gray]
-	\tikzstyle{vertex_opened} = [circle, draw=black]
-
-%------------------------------------------------------------
-	\node[vertex_opened] (s) at (-2,2) {s};
-
-	\node[vertex_opened] (v00) at (0,0) {$h_0$};
-	\node[vertex_opened] (v01) at (0,2) {$h_1$};
-	\node[vertex_opened] (v02) at (0,4) {$h_2$};
-	
-	\path[-latex, opacity=1]   (s) edge node[ above ] {$0$} (v02);
-	\path[-latex, opacity=0.2] (s) edge node[ above ] {$0$} (v01);
-	\path[-latex, opacity=0.2] (s) edge node[ above ] {$0$} (v00);
-		
-%------------------------------------------------------------
-	
-	\node[vertex_opened]   (v10) at (3,0) {};
-	\node[vertex_opened]   (v11) at (3,2) {};
-	\node[vertex_closed_1] (v12) at (3,4) {};
-		
-	\path[-latex, opacity=1] (v02) edge node[ sloped, above ] {$g_{2D_{max}}$} (v10);
-	\path[-latex, opacity=1] (v02) edge node[ sloped, above ] {$...$} (v11);
-	\path[-latex, opacity=1] (v02) edge node[ sloped, above ] {$g_{20}$} (v12);
-	
-	\path[-latex, opacity=0.2] (v01) edge node[ above ] {} (v10);
-	\path[-latex, opacity=0.2] (v01) edge node[ above ] {} (v11);
-	\path[-latex, opacity=0.2] (v01) edge node[ above ] {} (v12);
-	
-	\path[-latex, opacity=0.2] (v00) edge node[ above ] {} (v10);
-	\path[-latex, opacity=0.2] (v00) edge node[ above ] {} (v11);
-	\path[-latex, opacity=0.2] (v00) edge node[ above ] {} (v12);
-%------------------------------------------------------------
-	
-	\node[vertex_opened]   (v20) at (4,0) {};
-	\node[vertex_closed_1] (v21) at (4,2) {};
-	\node[vertex_closed_1] (v22) at (4,4) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_1] (v30) at (5,0) {};
-	\node[vertex_closed_1] (v31) at (5,2) {};
-	\node[vertex_closed_1] (v32) at (5,4) {};
-		
-%------------------------------------------------------------
-
-	\node[vertex_closed_1, opacity =0] (v40) at (7,0) {};
-	\node[vertex_closed_1, opacity =0] (v41) at (7,2) {};
-	\node[vertex_closed_1, opacity =0] (v42) at (7,4) {};
-	
-	\path (v30) -- node[auto=false]{\ldots} (v40);
-	\path (v31) -- node[auto=false]{\ldots} (v41);
-	\path (v32) -- node[auto=false]{\ldots} (v42);
-	
-	\end{tikzpicture}
-	\captionof{figure}{граф $G$ до оптимізації}
-	\label{Goptstart}
-\end{figure}
-
-І як тільки ми їх знайдемо, тоді всі інші можливі шляхи з $S$ до $ \sigma(2,d), \, d \in D$ нам не потрібні. Тому ми відкидаємо всі вершини в першому стовпчику, і вводимо ребра $<S, \sigma(2, d) >, \, d \in D$ (рис.\ref{Goptafter}), з вагою $${g_d}^{(1)} = \min\limits_{k=0}^{D_{max}} (h_{k} + g_{kd}).$$ 
-%Goptafter
-\begin{figure}[h!]
-	\centering
-	\begin{tikzpicture}[scale=1]
-
-	\tikzstyle{vertex_closed_1} = [circle, draw=black, fill=gray] %opacity=0.3]
-	\tikzstyle{vertex_closed_2} = [circle, draw=black, fill=gray]
-	\tikzstyle{vertex_opened} = [circle, draw=black]
-
-%------------------------------------------------------------
-	\node[vertex_opened] (s) at (0,1) {s};
-	
-	\node[vertex_opened]   (v10) at (2,0) {};
-	\node[vertex_opened]   (v11) at (2,1) {};
-	\node[vertex_closed_1] (v12) at (2,2) {};
-		
-	\path[-latex, opacity=1]   (s) edge node[ above, sloped, scale = 0.7 ] {${g^{(1)}}_{D_{max}}$} (v10);
-	\path[-latex, opacity=1]   (s) edge node[ above, sloped, scale = 0.7 ] {${g^{(1)}}_1$} (v11);
-	\path[-latex, opacity=1]   (s) edge node[ above, sloped, scale = 0.7 ] {${g^{(1)}}_0$} (v12);
-%------------------------------------------------------------
-	
-	\node[vertex_opened]   (v20) at (3,0) {};
-	\node[vertex_closed_1] (v21) at (3,1) {};
-	\node[vertex_closed_1] (v22) at (3,2) {};
-		
-%------------------------------------------------------------
-	
-	\node[vertex_closed_1] (v30) at (4,0) {};
-	\node[vertex_closed_1] (v31) at (4,1) {};
-	\node[vertex_closed_1] (v32) at (4,2) {};
-		
-%------------------------------------------------------------
-
-	\node[vertex_closed_1, opacity =0] (v40) at (6,0) {};
-	\node[vertex_closed_1, opacity =0] (v41) at (6,1) {};
-	\node[vertex_closed_1, opacity =0] (v42) at (6,2) {};
-	
-	\path (v30) -- node[auto=false]{\ldots} (v40);
-	\path (v31) -- node[auto=false]{\ldots} (v41);
-	\path (v32) -- node[auto=false]{\ldots} (v42);
-	
-	\end{tikzpicture}
-	\captionof{figure}{Після оптимізації}
-	\label{Goptafter}
-\end{figure}	
-Цим самим зменшуємо кількість ребер на $(D_{max})^2$. При надходженні наступних пікселей повторюємо цю операцію, але ваги нових ребер $g_d^{(i)}$ вже будуть враховувати попередні оптимізації --
-$${g_d}^{(i)} = \min\limits_{k=0}^{D_{max}} ({g_k}^{(i-1)} + h_{k} + g_{kd}).$$ 
-
-Після кожної такої оптимізації кількість ребер в графі зменшується на $(D_{max})^2$. Таким чином, коли нам будуть відомі всі пікселі обох зображень, нам зали
-Після отримання перших $D_{max} + 1$ пікселів обох зображень при кожному наступному відкритому пікселі зменшуємо кількість ребер на $(D_{max})^2$. Такий метод ефективний, коли довжина зображення $n$ більша за $D_{max}$.	
+%Після кожної такої оптимізації кількість ребер в графі зменшується на $(D_{max})^2$. Таким чином, коли нам будуть відомі всі пікселі обох зображень, нам зали
+%Після отримання перших $D_{max} + 1$ пікселів обох зображень при кожному наступному відкритому пікселі зменшуємо кількість ребер на $(D_{max})^2$. Такий метод ефективний, коли довжина зображення $n$ більша за $D_{max}$.	
  
 %%====================================================================================%%
 
